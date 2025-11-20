@@ -28,7 +28,7 @@ if (!isset($_POST['enviado'])) {
                     if (password_verify($contrasena, $user['password'])) {
                         $_SESSION['user_id'] = $user['id'];
                         $_SESSION['user_email'] = $user['email'];
-                        $_SESSION['user_nombre'] = $user['nombre_completo'];
+                        $_SESSION['user_nombre'] = $user['nombre'];
                         $_SESSION['user_rol'] = $user['rol'];
                         $_SESSION['logeado'] = true;
                     
