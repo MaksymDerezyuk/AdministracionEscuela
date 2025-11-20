@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS tbl_gestores (
 -- =====================================
 
 INSERT INTO tbl_gestores (nombre_completo, email, password, rol) VALUES
-('Administrador del Sistema', 'admin@centro.edu', 'qazQAZ123', 'administrador');
+('Administrador del Sistema', 'admin@centro.edu', '$2y$10$5mJbkW4B1C/P4gWUThlWVOETvOoES33/jqAEz5AyZ23Gs2H/5QovK', 'administrador');
 
 INSERT INTO tbl_gestores (nombre_completo, email, password, rol) VALUES
-('Pep Jordian', 'pep@centro.edu', 'qazQAZ123', 'profeso');
+('Pep Jordian', 'pep@centro.edu', '$2y$10$5mJbkW4B1C/P4gWUThlWVOETvOoES33/jqAEz5AyZ23Gs2H/5QovK', 'profesor');
