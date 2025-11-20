@@ -11,7 +11,10 @@ require_once './conexion/connection.php';
 $usuario = $_SESSION['user_nombre'];
 
 // --- Logic for Filters and Pagination ---
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$search_nombre = isset($_GET['search_nombre']) ? trim($_GET['search_nombre']) : '';
+$search_apellido = isset($_GET['search_apellido']) ? trim($_GET['search_apellido']) : '';
+$search_dni = isset($_GET['search_dni']) ? trim($_GET['search_dni']) : '';
+$search_email = isset($_GET['search_email']) ? trim($_GET['search_email']) : '';
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
@@ -21,14 +24,22 @@ $offset = ($page - 1) * $limit;
 $sql = "SELECT * FROM tbl_alumnos WHERE 1=1";
 $params = [];
 
-if (!empty($search)) {
-    $sql .= " AND (nombre LIKE :search1 OR apellido1 LIKE :search2 OR apellido2 LIKE :search3 OR dni LIKE :search4 OR email LIKE :search5)";
-    $searchTerm = "%$search%";
-    $params[':search1'] = $searchTerm;
-    $params[':search2'] = $searchTerm;
-    $params[':search3'] = $searchTerm;
-    $params[':search4'] = $searchTerm;
-    $params[':search5'] = $searchTerm;
+if (!empty($search_nombre)) {
+    $sql .= " AND nombre LIKE :nombre";
+    $params[':nombre'] = "%$search_nombre%";
+}
+if (!empty($search_apellido)) {
+    $sql .= " AND (apellido1 LIKE :apellido1 OR apellido2 LIKE :apellido2)";
+    $params[':apellido1'] = "%$search_apellido%";
+    $params[':apellido2'] = "%$search_apellido%";
+}
+if (!empty($search_dni)) {
+    $sql .= " AND dni LIKE :dni";
+    $params[':dni'] = "%$search_dni%";
+}
+if (!empty($search_email)) {
+    $sql .= " AND email LIKE :email";
+    $params[':email'] = "%$search_email%";
 }
 
 // Count total for pagination
@@ -48,6 +59,15 @@ $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Helper for pagination links
+$queryParams = http_build_query([
+    'search_nombre' => $search_nombre,
+    'search_apellido' => $search_apellido,
+    'search_dni' => $search_dni,
+    'search_email' => $search_email,
+    'limit' => $limit
+]);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -74,28 +94,53 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Filters & Actions -->
     <div class="filters">
-        <form action="" method="GET" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; width: 100%;">
-            <div style="flex-grow: 1;">
-                <input type="text" name="search" placeholder="Buscar por nombre, DNI o email..." value="<?php echo htmlspecialchars($search); ?>" style="width: 100%;">
-            </div>
-            <div>
-                <label for="limit">Mostrar:</label>
-                <select name="limit" id="limit" onchange="this.form.submit()">
-                    <option value="5" <?php if($limit == 5) echo 'selected'; ?>>5</option>
-                    <option value="10" <?php if($limit == 10) echo 'selected'; ?>>10</option>
-                    <option value="20" <?php if($limit == 20) echo 'selected'; ?>>20</option>
-                    <option value="50" <?php if($limit == 50) echo 'selected'; ?>>50</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-            <?php if(!empty($search)): ?>
-                <a href="index.php" class="btn btn-warning">Limpiar</a>
-            <?php endif; ?>
+        <form action="" method="GET" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
             
-            <div style="margin-left: auto;">
-                <a href="./view/crear_alumno.php" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Alumno</a>
-                <a href="./view/estadisticas.php" class="btn btn-info"><i class="fas fa-chart-bar"></i> Estadísticas</a>
+            <!-- Top Row: Search Fields -->
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
+                <div style="flex: 1 1 150px; min-width: 150px;">
+                    <label for="search_nombre" style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Nombre:</label>
+                    <input type="text" name="search_nombre" id="search_nombre" placeholder="Buscar por nombre..." value="<?php echo htmlspecialchars($search_nombre); ?>" style="width: 100%;">
+                </div>
+                <div style="flex: 1 1 150px; min-width: 150px;">
+                    <label for="search_apellido" style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Apellidos:</label>
+                    <input type="text" name="search_apellido" id="search_apellido" placeholder="Buscar por apellidos..." value="<?php echo htmlspecialchars($search_apellido); ?>" style="width: 100%;">
+                </div>
+                <div style="flex: 1 1 150px; min-width: 150px;">
+                    <label for="search_dni" style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">DNI:</label>
+                    <input type="text" name="search_dni" id="search_dni" placeholder="Buscar por DNI..." value="<?php echo htmlspecialchars($search_dni); ?>" style="width: 100%;">
+                </div>
+                <div style="flex: 1 1 200px; min-width: 200px;">
+                    <label for="search_email" style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Email:</label>
+                    <input type="text" name="search_email" id="search_email" placeholder="Buscar por email..." value="<?php echo htmlspecialchars($search_email); ?>" style="width: 100%;">
+                </div>
             </div>
+
+            <!-- Bottom Row: Limit + Buttons -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="limit" style="font-size: 0.8rem; margin: 0;">Mostrar:</label>
+                        <select name="limit" id="limit" onchange="this.form.submit()" style="min-width: 80px;">
+                            <option value="5" <?php if($limit == 5) echo 'selected'; ?>>5</option>
+                            <option value="10" <?php if($limit == 10) echo 'selected'; ?>>10</option>
+                            <option value="20" <?php if($limit == 20) echo 'selected'; ?>>20</option>
+                            <option value="50" <?php if($limit == 50) echo 'selected'; ?>>50</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                    <?php if(!empty($search_nombre) || !empty($search_apellido) || !empty($search_dni) || !empty($search_email)): ?>
+                        <a href="index.php" class="btn btn-warning">Limpiar</a>
+                    <?php endif; ?>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <a href="./view/crear_alumno.php" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Alumno</a>
+                    <a href="./view/estadisticas.php" class="btn btn-info"><i class="fas fa-chart-bar"></i> Estadísticas</a>
+                </div>
+            </div>
+
         </form>
     </div>
 
@@ -139,17 +184,17 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php if ($totalPages > 1): ?>
         <div class="pagination">
             <?php if ($page > 1): ?>
-                <a href="?page=<?php echo $page - 1; ?>&limit=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>">&laquo; Anterior</a>
+                <a href="?page=<?php echo $page - 1; ?>&<?php echo $queryParams; ?>">&laquo; Anterior</a>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?php echo $i; ?>&limit=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>" class="<?php if ($i == $page) echo 'active'; ?>">
+                <a href="?page=<?php echo $i; ?>&<?php echo $queryParams; ?>" class="<?php if ($i == $page) echo 'active'; ?>">
                     <?php echo $i; ?>
                 </a>
             <?php endfor; ?>
 
             <?php if ($page < $totalPages): ?>
-                <a href="?page=<?php echo $page + 1; ?>&limit=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>">Siguiente &raquo;</a>
+                <a href="?page=<?php echo $page + 1; ?>&<?php echo $queryParams; ?>">Siguiente &raquo;</a>
             <?php endif; ?>
         </div>
     <?php endif; ?>
