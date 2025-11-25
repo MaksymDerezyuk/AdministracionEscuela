@@ -43,6 +43,6 @@ session_destroy();
     </main>
     </main>
     
-    <script src="../proc/login.js"></script>
+    <script src="../js/login.js"></script>
 </body>
 </html>
