@@ -20,8 +20,7 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $offset = ($page - 1) * $limit;
 
-// --- BUILD QUERY (MODIFICADO POR ANALISTA) ---
-// Usamos alias 'a' para alumnos, 'm' para matrículas, 'g' para grados
+// --- BUILD QUERY ---
 $sql = "SELECT a.*, g.nombre AS nombre_grado 
         FROM tbl_alumnos a
         LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno
@@ -30,7 +29,6 @@ $sql = "SELECT a.*, g.nombre AS nombre_grado
 
 $params = [];
 
-// Filtros (Añadido el prefijo 'a.' para evitar ambigüedad)
 if (!empty($search_nombre)) {
     $sql .= " AND a.nombre LIKE :nombre";
     $params[':nombre'] = "%$search_nombre%";
@@ -49,9 +47,7 @@ if (!empty($search_email)) {
     $params[':email'] = "%$search_email%";
 }
 
-// --- Count total for pagination ---
-// Reemplazamos el SELECT complejo por un COUNT simple manteniendo los filtros
-// Nota: Usamos una query específica para el conteo para evitar errores con los JOINs en el str_replace
+// --- Count total ---
 $sqlCount = "SELECT COUNT(*) FROM tbl_alumnos a 
              LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
              LEFT JOIN tbl_grados g ON m.id_grado = g.id 
@@ -67,7 +63,7 @@ $stmtCount->execute($params);
 $totalRecords = $stmtCount->fetchColumn();
 $totalPages = ceil($totalRecords / $limit);
 
-// --- Add Limit and Offset to Main Query ---
+// --- Add Limit ---
 $sql .= " LIMIT :limit OFFSET :offset";
 $stmt = $conn->prepare($sql);
 foreach ($params as $key => $value) {
@@ -96,6 +92,7 @@ $queryParams = http_build_query([
     <title>Panel de Administración - Gestio-Notes</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -150,11 +147,9 @@ $queryParams = http_build_query([
                     </div>
 
                     <div class="action-buttons">
-                        <?php
-                        if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador') {
-                            echo '<a href="./view/crear_alumno.php" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Alumno</a>';
-                        }
-                        ?>
+                        <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador'): ?>
+                            <a href="./view/crear_alumno.php" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Alumno</a>
+                        <?php endif; ?>
                         <a href="./view/estadisticas.php" class="btn btn-info"><i class="fas fa-chart-bar"></i> Estadísticas</a>
                     </div>
                 </div>
@@ -168,7 +163,8 @@ $queryParams = http_build_query([
                         <th>DNI</th>
                         <th>Nombre</th>
                         <th>Apellidos</th>
-                        <th>Grado</th> <th>Email</th>
+                        <th>Grado</th>
+                        <th>Email</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -179,7 +175,6 @@ $queryParams = http_build_query([
                                 <td><?php echo htmlspecialchars($row['dni']); ?></td>
                                 <td><?php echo htmlspecialchars($row['nombre']); ?></td>
                                 <td><?php echo htmlspecialchars($row['apellido1'] . ' ' . $row['apellido2']); ?></td>
-                                
                                 <td>
                                     <?php 
                                     if (!empty($row['nombre_grado'])) {
@@ -189,16 +184,15 @@ $queryParams = http_build_query([
                                     }
                                     ?>
                                 </td>
-
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td class="actions">
                                     <a href="./view/ver_alumno.php?id=<?php echo $row['id']; ?>" class="btn btn-info" title="Ver Notas"><i class="fas fa-eye"></i></a>
-                                    <?php
-                                    if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador') {
-                                        echo '<a href="./view/editar_alumno.php?id=' . $row['id'] . '" class="btn btn-warning" title="Editar"><i class="fas fa-edit"></i></a>';
-                                        echo '<a href="./proc/proc_eliminar_alumno.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'¿Estás seguro de eliminar este alumno y todas sus notas?\');" title="Eliminar"><i class="fas fa-trash"></i></a>';
-                                    }
-                                    ?>
+                                    <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador'): ?>
+                                        <a href="./view/editar_alumno.php?id=<?php echo $row['id']; ?>" class="btn btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
+                                        <button onclick="confirmarBorrado(<?php echo $row['id']; ?>)" class="btn btn-danger" title="Eliminar" style="border:none;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -216,13 +210,9 @@ $queryParams = http_build_query([
                 <?php if ($page > 1): ?>
                     <a href="?page=<?php echo $page - 1; ?>&<?php echo $queryParams; ?>">&laquo; Anterior</a>
                 <?php endif; ?>
-
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?php echo $i; ?>&<?php echo $queryParams; ?>" class="<?php if ($i == $page) echo 'active'; ?>">
-                        <?php echo $i; ?>
-                    </a>
+                    <a href="?page=<?php echo $i; ?>&<?php echo $queryParams; ?>" class="<?php if ($i == $page) echo 'active'; ?>"><?php echo $i; ?></a>
                 <?php endfor; ?>
-
                 <?php if ($page < $totalPages): ?>
                     <a href="?page=<?php echo $page + 1; ?>&<?php echo $queryParams; ?>">Siguiente &raquo;</a>
                 <?php endif; ?>
@@ -230,6 +220,8 @@ $queryParams = http_build_query([
         <?php endif; ?>
 
     </div>
+
+    <script src="./js/alert.js"></script>
 
 </body>
 </html>
