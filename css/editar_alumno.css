@@ -1,0 +1,71 @@
+/* Estilos específicos para el formulario de editar alumno */
+
+/* Formulario más ancho para acomodar más campos */
+.tarjeta-wide {
+    max-width: 700px;
+}
+
+/* Layout en grid de 2 columnas */
+.formulario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+}
+
+.formulario-grid label {
+    grid-column: span 1;
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Campos que ocupan todo el ancho */
+.formulario-grid label.full-width {
+    grid-column: span 2;
+}
+
+/* Botón y enlace ocupan todo el ancho */
+.formulario-grid button[type="submit"],
+.formulario-grid>a {
+    grid-column: span 2;
+}
+
+/* Estilos para inputs de fecha y select */
+.formulario input[type="date"],
+.formulario select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: white;
+    font-family: inherit;
+}
+
+.formulario input[type="date"]:focus,
+.formulario select:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Responsive: en móviles vuelve a 1 columna */
+@media (max-width: 768px) {
+    .formulario-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .formulario-grid label,
+    .formulario-grid label.full-width {
+        grid-column: span 1;
+    }
+
+    .tarjeta-wide {
+        max-width: 450px;
+    }
+}
