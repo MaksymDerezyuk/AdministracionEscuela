@@ -20,112 +20,54 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $offset = ($page - 1) * $limit;
 
-// Build Query
-$sql = "SELECT * FROM tbl_alumnos WHERE 1=1";
+// --- BUILD QUERY (MODIFICADO POR ANALISTA) ---
+// Usamos alias 'a' para alumnos, 'm' para matrículas, 'g' para grados
+$sql = "SELECT a.*, g.nombre AS nombre_grado 
+        FROM tbl_alumnos a
+        LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno
+        LEFT JOIN tbl_grados g ON m.id_grado = g.id
+        WHERE 1=1";
+
 $params = [];
 
+// Filtros (Añadido el prefijo 'a.' para evitar ambigüedad)
 if (!empty($search_nombre)) {
-    $sql .= " AND nombre LIKE :nombre";
+    $sql .= " AND a.nombre LIKE :nombre";
     $params[':nombre'] = "%$search_nombre%";
 }
 if (!empty($search_apellido)) {
-    $sql .= " AND (apellido1 LIKE :apellido1 OR apellido2 LIKE :apellido2)";
+    $sql .= " AND (a.apellido1 LIKE :apellido1 OR a.apellido2 LIKE :apellido2)";
     $params[':apellido1'] = "%$search_apellido%";
     $params[':apellido2'] = "%$search_apellido%";
 }
 if (!empty($search_dni)) {
-    $sql .= " AND dni LIKE :dni";
+    $sql .= " AND a.dni LIKE :dni";
     $params[':dni'] = "%$search_dni%";
 }
 if (!empty($search_email)) {
-    $sql .= " AND email LIKE :email";
+    $sql .= " AND a.email LIKE :email";
     $params[':email'] = "%$search_email%";
 }
 
-// Count total for pagination
-$sqlCount = str_replace("SELECT *", "SELECT COUNT(*)", $sql);
+// --- Count total for pagination ---
+// Reemplazamos el SELECT complejo por un COUNT simple manteniendo los filtros
+// Nota: Usamos una query específica para el conteo para evitar errores con los JOINs en el str_replace
+$sqlCount = "SELECT COUNT(*) FROM tbl_alumnos a 
+             LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
+             LEFT JOIN tbl_grados g ON m.id_grado = g.id 
+             WHERE 1=1";
+
+if (!empty($search_nombre)) $sqlCount .= " AND a.nombre LIKE :nombre";
+if (!empty($search_apellido)) $sqlCount .= " AND (a.apellido1 LIKE :apellido1 OR a.apellido2 LIKE :apellido2)";
+if (!empty($search_dni)) $sqlCount .= " AND a.dni LIKE :dni";
+if (!empty($search_email)) $sqlCount .= " AND a.email LIKE :email";
+
 $stmtCount = $conn->prepare($sqlCount);
 $stmtCount->execute($params);
 $totalRecords = $stmtCount->fetchColumn();
 $totalPages = ceil($totalRecords / $limit);
 
-// Add Limit and Offset
-$sql .= " LIMIT :limit OFFSET :offset";
-$stmt = $conn->prepare($sql);
-foreach ($params as $key => $value) {
-    $stmt->bindValue($key, $value);
-}
-$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$stmt->execute();
-$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Helper for pagination links
-$queryParams = http_build_query([
-    'search_nombre' => $search_nombre,
-    'search_apellido' => $search_apellido,
-    'search_dni' => $search_dni,
-    'search_email' => $search_email,
-    'limit' => $limit
-]);
-?>
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<?php
-
-if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
-    header('Location: ./view/login.php');
-    exit();
-}
-
-require_once './conexion/connection.php';
-
-$usuario = $_SESSION['user_nombre'];
-
-// --- Logic for Filters and Pagination ---
-$search_nombre = isset($_GET['search_nombre']) ? trim($_GET['search_nombre']) : '';
-$search_apellido = isset($_GET['search_apellido']) ? trim($_GET['search_apellido']) : '';
-$search_dni = isset($_GET['search_dni']) ? trim($_GET['search_dni']) : '';
-$search_email = isset($_GET['search_email']) ? trim($_GET['search_email']) : '';
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-if ($page < 1) $page = 1;
-$offset = ($page - 1) * $limit;
-
-// Build Query
-$sql = "SELECT * FROM tbl_alumnos WHERE 1=1";
-$params = [];
-
-if (!empty($search_nombre)) {
-    $sql .= " AND nombre LIKE :nombre";
-    $params[':nombre'] = "%$search_nombre%";
-}
-if (!empty($search_apellido)) {
-    $sql .= " AND (apellido1 LIKE :apellido1 OR apellido2 LIKE :apellido2)";
-    $params[':apellido1'] = "%$search_apellido%";
-    $params[':apellido2'] = "%$search_apellido%";
-}
-if (!empty($search_dni)) {
-    $sql .= " AND dni LIKE :dni";
-    $params[':dni'] = "%$search_dni%";
-}
-if (!empty($search_email)) {
-    $sql .= " AND email LIKE :email";
-    $params[':email'] = "%$search_email%";
-}
-
-// Count total for pagination
-$sqlCount = str_replace("SELECT *", "SELECT COUNT(*)", $sql);
-$stmtCount = $conn->prepare($sqlCount);
-$stmtCount->execute($params);
-$totalRecords = $stmtCount->fetchColumn();
-$totalPages = ceil($totalRecords / $limit);
-
-// Add Limit and Offset
+// --- Add Limit and Offset to Main Query ---
 $sql .= " LIMIT :limit OFFSET :offset";
 $stmt = $conn->prepare($sql);
 foreach ($params as $key => $value) {
@@ -153,7 +95,6 @@ $queryParams = http_build_query([
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Gestio-Notes</title>
     <link rel="stylesheet" href="./css/style.css">
-    <!-- FontAwesome for icons (optional but recommended) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
@@ -175,19 +116,19 @@ $queryParams = http_build_query([
                 <div class="filter-row">
                     <div class="filter-group">
                         <label for="search_nombre" class="filter-label">Nombre:</label>
-                        <input type="text" name="search_nombre" id="search_nombre" placeholder="Buscar por nombre..." value="<?php echo htmlspecialchars($search_nombre); ?>">
+                        <input type="text" name="search_nombre" id="search_nombre" placeholder="Buscar..." value="<?php echo htmlspecialchars($search_nombre); ?>">
                     </div>
                     <div class="filter-group">
                         <label for="search_apellido" class="filter-label">Apellidos:</label>
-                        <input type="text" name="search_apellido" id="search_apellido" placeholder="Buscar por apellidos..." value="<?php echo htmlspecialchars($search_apellido); ?>">
+                        <input type="text" name="search_apellido" id="search_apellido" placeholder="Buscar..." value="<?php echo htmlspecialchars($search_apellido); ?>">
                     </div>
                     <div class="filter-group">
                         <label for="search_dni" class="filter-label">DNI:</label>
-                        <input type="text" name="search_dni" id="search_dni" placeholder="Buscar por DNI..." value="<?php echo htmlspecialchars($search_dni); ?>">
+                        <input type="text" name="search_dni" id="search_dni" placeholder="Buscar..." value="<?php echo htmlspecialchars($search_dni); ?>">
                     </div>
                     <div class="filter-group large">
                         <label for="search_email" class="filter-label">Email:</label>
-                        <input type="text" name="search_email" id="search_email" placeholder="Buscar por email..." value="<?php echo htmlspecialchars($search_email); ?>">
+                        <input type="text" name="search_email" id="search_email" placeholder="Buscar..." value="<?php echo htmlspecialchars($search_email); ?>">
                     </div>
                 </div>
 
@@ -220,7 +161,6 @@ $queryParams = http_build_query([
             </form>
         </div>
 
-        <!-- Table -->
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -228,7 +168,7 @@ $queryParams = http_build_query([
                         <th>DNI</th>
                         <th>Nombre</th>
                         <th>Apellidos</th>
-                        <th>Email</th>
+                        <th>Grado</th> <th>Email</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -239,6 +179,17 @@ $queryParams = http_build_query([
                                 <td><?php echo htmlspecialchars($row['dni']); ?></td>
                                 <td><?php echo htmlspecialchars($row['nombre']); ?></td>
                                 <td><?php echo htmlspecialchars($row['apellido1'] . ' ' . $row['apellido2']); ?></td>
+                                
+                                <td>
+                                    <?php 
+                                    if (!empty($row['nombre_grado'])) {
+                                        echo "<b>" . htmlspecialchars($row['nombre_grado']) . "</b>";
+                                    } else {
+                                        echo '<span style="color:#999; font-style:italic;">Sin matricular</span>';
+                                    }
+                                    ?>
+                                </td>
+
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td class="actions">
                                     <a href="./view/ver_alumno.php?id=<?php echo $row['id']; ?>" class="btn btn-info" title="Ver Notas"><i class="fas fa-eye"></i></a>
@@ -253,14 +204,13 @@ $queryParams = http_build_query([
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center">No se encontraron alumnos.</td>
+                            <td colspan="6" class="text-center">No se encontraron alumnos.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <?php if ($page > 1): ?>
@@ -282,5 +232,4 @@ $queryParams = http_build_query([
     </div>
 
 </body>
-
 </html>
