@@ -70,5 +70,4 @@ session_start();
     </main>
     <script src="../js/registrar.js"></script>
 </body>
-
 </html>
