@@ -441,6 +441,201 @@ a:hover {
     border-radius: 4px;
 }
 
+.alerta-exito {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+/* Responsive behavior: stack image on top on small screens */
+@media (max-width: 768px) {
+    .split-page {
+        flex-direction: column;
+    }
+
+    .split__media {
+        height: 220px;
+        /* fixed height for the banner image when stacked */
+    }
+
+    .split-page>.tarjeta {
+        max-width: 100%;
+    }
+}
+
+/* --- Dashboard Styles --- */
+
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    text-align: left;
+    font-size: 1.8rem;
+}
+
+.dashboard-header p {
+    color: #666;
+    margin: 0;
+}
+
+/* Filters */
+.filters {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.filters form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filters input[type="text"],
+.filters select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    text-align: center;
+    font-family: inherit;
+    line-height: 1.5;
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    text-decoration: none;
+    color: #212529;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    text-decoration: none;
+    color: white;
+}
+
+/* Table */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.table th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 600;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 0, 0, .075);
+}
+
+.table .actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pagination a {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    color: #007BFF;
+    border-radius: 4px;
+}
+
 .pagination a:hover {
     background-color: #e9ecef;
     text-decoration: none;
@@ -450,4 +645,78 @@ a:hover {
     background-color: #007BFF;
     color: white;
     border-color: #007BFF;
+}
+
+/* --- Refactored Filter Styles --- */
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.filter-group {
+    flex: 1 1 150px;
+    min-width: 150px;
+}
+
+.filter-group.large {
+    flex: 1 1 200px;
+    min-width: 200px;
+}
+
+.filter-label {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.filters input[type="text"] {
+    width: 100%;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.limit-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.limit-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.limit-label {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.limit-select {
+    min-width: 80px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.text-center {
+    text-align: center;
 }
