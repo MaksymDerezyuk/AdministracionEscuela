@@ -254,3 +254,24 @@ a:hover {
         max-width: 100%;
     }
 }
+
+/* Inputs de tipo date y selects en formularios */
+.formulario input[type="date"],
+.formulario select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: white;
+    appearance: none; /* elimina flechas nativas en algunos navegadores */
+}
+
+.formulario input[type="date"]:focus,
+.formulario select:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
