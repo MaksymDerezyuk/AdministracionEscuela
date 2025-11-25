@@ -721,117 +721,178 @@ a:hover {
     text-align: center;
 }
 
-/* --- Estilos para Estadísticas (Versión Barras) --- */
-.kpi-container {
+/* =========================================
+   ESTILOS PÁGINA ESTADÍSTICAS
+   ========================================= */
+
+/* --- Cabecera y Layout --- */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-title h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.header-title p {
+    margin: 5px 0 0;
+    color: #666;
+}
+
+/* --- Tarjetas KPI (Indicadores) --- */
+.kpi-wrapper {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
     margin-bottom: 30px;
 }
 
-.card-kpi {
+.kpi-card {
     flex: 1;
     min-width: 250px;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background: white;
-    border-top: 4px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #ccc;
     /* Color por defecto */
 }
 
-/* Colores para las tarjetas */
-.card-verde {
-    border-top-color: #2e7d32;
+.kpi-verde {
+    background-color: #e8f5e9;
+    border-left-color: #2e7d32;
 }
 
-.card-azul {
-    border-top-color: #005A9C;
+.kpi-azul {
+    background-color: #e3f2fd;
+    border-left-color: #1565c0;
 }
 
-.kpi-titulo {
-    margin-top: 0;
-    font-size: 1rem;
+.kpi-label {
+    font-size: 0.9rem;
     text-transform: uppercase;
-    color: #666;
     letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: 600;
 }
 
-.kpi-valor {
+.kpi-value {
     font-size: 2rem;
     font-weight: bold;
-    margin: 10px 0 0 0;
     color: #333;
 }
 
-/* --- BARRAS DE PROGRESO --- */
-.lista-progreso {
+.kpi-text-verde {
+    color: #2e7d32;
+}
+
+.kpi-text-azul {
+    color: #1565c0;
+}
+
+/* --- Tablas Específicas --- */
+.table-header-honor {
+    background-color: #f9a825;
+    color: white;
+}
+
+.table-header-honor th {
+    color: white;
+    /* Forzar blanco en esta cabecera */
+}
+
+.icon-medal {
+    color: #f9a825;
+    margin-right: 8px;
+}
+
+.text-success {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* --- Barras de Progreso (Rendimiento) --- */
+/* Esta clase permite que la tarjeta ocupe el 100% */
+.card-full-width {
+    width: 100%;
+    max-width: 100%;
+}
+
+.progress-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.item-progreso {
+.progress-item {
     display: flex;
     align-items: center;
     gap: 15px;
-    background: #fff;
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 6px;
+    background-color: #fff;
 }
 
-.nombre-asignatura {
-    flex: 0 0 200px;
-    /* Ancho fijo para el nombre */
+.progress-label {
+    flex: 0 0 220px;
+    /* Ancho fijo para el nombre de la asignatura */
     font-weight: 600;
+    color: #444;
 }
 
-.contenedor-barra {
+.progress-track {
     flex: 1;
-    /* Ocupa el resto del espacio */
-    height: 20px;
+    /* Ocupa todo el espacio restante */
     background-color: #e9ecef;
-    border-radius: 10px;
+    height: 24px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
-.barra-relleno {
+.progress-fill {
     height: 100%;
     text-align: right;
-    padding-right: 5px;
+    padding-right: 10px;
+    line-height: 24px;
     color: white;
-    font-size: 0.8rem;
-    line-height: 20px;
-    transition: width 0.5s ease;
-    /* Pequeña animación suave CSS */
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: width 0.6s ease;
 }
 
-.nota-numero {
-    font-weight: bold;
-    min-width: 40px;
+.progress-score {
+    width: 50px;
     text-align: right;
+    font-weight: bold;
+    color: #333;
 }
 
 /* Colores de las barras */
-.bg-excelente {
+.bg-success {
     background-color: #28a745;
 }
 
-/* Verde */
-.bg-bien {
+.bg-info {
     background-color: #17a2b8;
 }
 
-/* Azul */
-.bg-regular {
+.bg-warning {
     background-color: #ffc107;
     color: #333;
 }
 
-/* Amarillo */
-.bg-suspenso {
+.bg-danger {
     background-color: #dc3545;
 }
-
-/* Rojo */
