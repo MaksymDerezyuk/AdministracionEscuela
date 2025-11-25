@@ -67,7 +67,7 @@ try {
                 <p>Visión global del rendimiento académico</p>
             </div>
             <div>
-                <a href="index.php" class="btn btn-primary">Volver al Listado</a>
+                <a href="../index.php" class="btn btn-primary">Volver al Listado</a>
             </div>
         </div>
 
@@ -85,7 +85,7 @@ try {
             </div>
 
             <div class="kpi-card kpi-azul">
-                <div class="kpi-label kpi-text-azul">📊 Total Exámenes</div>
+                <div class="kpi-label kpi-text-azul">📊 Total de Notas</div>
                 <div class="kpi-value">
                     <?php 
                         $total = 0;
@@ -162,6 +162,26 @@ try {
         </div>
 
     </div>
+
+    <script>
+        // Animar las barras de progreso al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            
+            // Pequeño delay para que se vea la animación
+            setTimeout(() => {
+                progressBars.forEach((bar, index) => {
+                    const targetWidth = bar.style.width;
+                    bar.style.setProperty('--target-width', targetWidth);
+                    
+                    // Añadir clase animated con delay escalonado
+                    setTimeout(() => {
+                        bar.classList.add('animated');
+                    }, index * 100);
+                });
+            }, 300);
+        });
+    </script>
 
 </body>
 </html>
