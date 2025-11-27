@@ -92,6 +92,7 @@ $queryParams = http_build_query([
     <title>Panel de Administración - Gestio-Notes</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -187,12 +188,12 @@ $queryParams = http_build_query([
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td class="actions">
                                     <a href="./view/ver_alumno.php?id=<?php echo $row['id']; ?>" class="btn btn-info" title="Ver Notas"><i class="fas fa-eye"></i></a>
-                                    <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador'): ?>
-                                        <a href="./view/editar_alumno.php?id=<?php echo $row['id']; ?>" class="btn btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
-                                        <button onclick="confirmarBorrado(<?php echo $row['id']; ?>)" class="btn btn-danger" title="Eliminar" style="border:none;">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    <?php endif; ?>
+                                    <?php
+                                    if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador') {
+                                        echo '<a href="./view/editar_alumno.php?id=' . $row['id'] . '" class="btn btn-warning" title="Editar"><i class="fas fa-edit"></i></a>';
+                                        echo '<button onclick="confirmarEliminacion(' . $row['id'] . ', \'' . htmlspecialchars($row['nombre'] . ' ' . $row['apellido1'], ENT_QUOTES) . '\')"; class="btn btn-danger" title="Eliminar"><i class="fas fa-trash"></i></button>';
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -221,7 +222,8 @@ $queryParams = http_build_query([
 
     </div>
 
-    <script src="./js/alert.js"></script>
+    <script src="./js/index.js"></script>
+</body>
 
 </body>
 </html>
