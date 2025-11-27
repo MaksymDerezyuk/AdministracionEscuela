@@ -4,12 +4,12 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Crear cuenta</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/style.css">
-        <script src="../proc/registrar.js"></script>
 </head>
 
 <body>
@@ -25,26 +25,26 @@ session_start();
                     <form action="../proc/insert_register.php" method="post" autocomplete="off" class="formulario">
                         <label>
                             Correo electrónico
-                            <input type="text" id="email" name="email" onblur="validaEmail()" >
+                            <input type="text" id="email" name="email" onblur="validaEmail()">
                             <div id="errorEmail" class="error"></div>
                         </label>
                         <label>
                             Nombre de usuario
-                            <input type="text" id="username" name="username" onblur="validaUsuario()" >
+                            <input type="text" id="username" name="username" onblur="validaUsuario()">
                             <div id="errorUsuario" class="error"></div>
                         </label>
                         <label>
                             Contraseña
-                            <input type="password" id="password" name="password" onblur="validaPassword()" >
+                            <input type="password" id="password" name="password" onblur="validaPassword()">
                             <div id="errorPassword" class="error"></div>
                         </label>
                         <label>
                             Confirmar contraseña
-                            <input type="password" id="confirm_password" name="confirm_password" onblur="validaConfirmPassword()" >
+                            <input type="password" id="confirm_password" name="confirm_password" onblur="validaConfirmPassword()">
                             <div id="errorConfirm" class="error"></div>
                         </label>
                         <label>
-                            Selecciona tu rol:  
+                            Selecciona tu rol:
                         </label>
                         <fieldset class="roles" aria-describedby="errorRol" style="border:none;padding:0;margin:0 0 1rem 0;">
                             <label for="rol_profesor"><input type="radio" id="rol_profesor" name="rol" value="profesor" onchange="validaRol()" required> Profesor</label>
@@ -68,6 +68,6 @@ session_start();
             </div>
         </div>
     </main>
-
+    <script src="../js/registrar.js"></script>
 </body>
 </html>

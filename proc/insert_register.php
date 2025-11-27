@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $rol = trim(htmlspecialchars($rol));
                                     try {
                                         // Comprobar duplicados
-                                        $sqlCheck = "SELECT id FROM tbl_gestores WHERE nombre_completo = :username OR email = :email";
+                                        $sqlCheck = "SELECT id FROM tbl_gestores WHERE nombre = :username OR email = :email";
                                         $stmtCheck = $conn->prepare($sqlCheck);
                                         $stmtCheck->bindParam(':username', $username);
                                         $stmtCheck->bindParam(':email', $email);
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         $password_hash = password_hash($password, PASSWORD_DEFAULT);
                                     
                                         // Insertar nuevo usuario - CORREGIDO: usar 'password' en lugar de 'password_hash'
-                                        $sqlInsert = "INSERT INTO tbl_gestores (nombre_completo, email, password, rol)
+                                        $sqlInsert = "INSERT INTO tbl_gestores (nombre, email, password, rol)
                                                       VALUES (:username, :email, :contrasena, :rol)";
                                         $stmtInsert = $conn->prepare($sqlInsert);
                                         $stmtInsert->bindParam(':username', $username);
