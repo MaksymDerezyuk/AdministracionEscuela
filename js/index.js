@@ -46,4 +46,40 @@ window.addEventListener('DOMContentLoaded', function () {
             window.history.replaceState({}, document.title, window.location.pathname);
         });
     }
+
+    // Lógica para Filtros Móvil y Botones de Acción
+    const filtersContainer = document.querySelector('.filters');
+    if (filtersContainer) {
+        const filtersForm = filtersContainer.querySelector('form');
+
+        if (filtersForm) {
+            // 1. Inyectar Botón Toggle
+            const toggleBtn = document.createElement('button');
+            toggleBtn.type = 'button';
+            toggleBtn.className = 'filters-toggle';
+            toggleBtn.id = 'filtersToggle';
+            toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Filtros <i class="fas fa-chevron-down toggle-icon"></i>';
+
+            filtersContainer.insertBefore(toggleBtn, filtersForm);
+
+            // Funcionalidad Toggle
+            toggleBtn.addEventListener('click', function () {
+                filtersForm.classList.toggle('show');
+                toggleBtn.classList.toggle('active');
+            });
+
+            // 2. Mover Botones de Acción (Nuevo Alumno, Estadísticas)
+            // Estructura: form > div (bottom row) > div (right side buttons)
+            const bottomRow = filtersForm.lastElementChild;
+            if (bottomRow) {
+                const actionButtons = bottomRow.lastElementChild;
+                // Verificamos que sea el div correcto (debe tener enlaces)
+                if (actionButtons && actionButtons.tagName === 'DIV' && actionButtons.querySelector('a')) {
+                    actionButtons.classList.add('action-buttons-moved');
+                    // Mover después del contenedor de filtros
+                    filtersContainer.parentNode.insertBefore(actionButtons, filtersContainer.nextSibling);
+                }
+            }
+        }
+    }
 });
