@@ -1236,6 +1236,219 @@ a:hover {
     animation-delay: 0.4s;
 }
 
+
+.kpi-text-verde {
+    color: #2e7d32;
+}
+
+
+.icon-medal {
+    color: #f9a825;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+    display: inline-block;
+}
+
+.text-success {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* --- Barras de Progreso (Rendimiento) --- */
+/* Esta clase permite que la tarjeta ocupe el 100% */
+.card-full-width {
+    width: 100%;
+    max-width: 100%;
+}
+
+.progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.progress-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.progress-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.progress-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.progress-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.progress-item:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.progress-item:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.progress-item:nth-child(7) {
+    animation-delay: 0.7s;
+}
+
+.progress-item:nth-child(8) {
+    animation-delay: 0.8s;
+}
+
+.progress-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #007BFF;
+}
+
+.progress-label {
+    flex: 0 0 220px;
+    /* Ancho fijo para el nombre de la asignatura */
+    font-weight: 600;
+    color: #444;
+}
+
+.progress-track {
+    flex: 1;
+    /* Ocupa todo el espacio restante */
+    background-color: #e9ecef;
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    text-align: right;
+    padding-right: 10px;
+    line-height: 24px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0 !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill.animated {
+    width: var(--target-width) !important;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-score {
+    width: 50px;
+    text-align: right;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Colores de las barras con gradientes */
+.bg-success {
+    background: linear-gradient(90deg, #28a745 0%, #34ce57 100%);
+}
+
+.bg-info {
+    background: linear-gradient(90deg, #17a2b8 0%, #20c9e0 100%);
+}
+
+.bg-warning {
+    background: linear-gradient(90deg, #ffc107 0%, #ffd54f 100%);
+    color: #333;
+}
+
+.bg-danger {
+    background: linear-gradient(90deg, #dc3545 0%, #f56c7a 100%);
+}
+
+/* Animación para la tabla de honor */
+.table tbody tr {
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.table tbody tr:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.table tbody tr:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.table tbody tr:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.table tbody tr:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
 .table tbody tr:nth-child(5) {
     animation-delay: 0.5s;
+}
+
+/* Botón volver al panel de administración */
+.btn-volver {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: inline-block;
+    background-color: #005A9C;
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-volver:hover {
+    background-color: #004a80;
+    text-decoration: none;
+    color: white;
 }
