@@ -275,3 +275,22 @@ a:hover {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
     outline: none;
 }
+/* Botón volver al panel de administración */
+.btn-volver {
+    display: inline-block;
+    background-color: #005A9C;
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-volver:hover {
+    background-color: #004a80;
+    text-decoration: none;
+    color: white;
+}

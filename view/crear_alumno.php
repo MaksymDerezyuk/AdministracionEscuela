@@ -14,6 +14,9 @@ $grados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+<!-- Botón Volver al Panel de Administración -->
+<a href="dashboard.php" class="btn-volver">&larr; Volver al Panel</a>
+
 <div class="auth-split">
     <div class="auth-left">
         <img src="../img/uni.png" alt="Logo Escuela">
