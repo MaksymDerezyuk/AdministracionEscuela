@@ -96,6 +96,8 @@ $queryParams = http_build_query([
     <title>Panel de Administración - Gestio-Notes</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -196,7 +198,7 @@ $queryParams = http_build_query([
                                     <?php
                                     if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador') {
                                         echo '<a href="./view/editar_alumno.php?id=' . $row['id'] . '" class="btn btn-warning" title="Editar"><i class="fas fa-edit"></i></a>';
-                                        echo '<a href="./proc/proc_eliminar_alumno.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'¿Estás seguro de eliminar este alumno y todas sus notas?\');" title="Eliminar"><i class="fas fa-trash"></i></a>';
+                                        echo '<button onclick="confirmarEliminacion(' . $row['id'] . ', \'' . htmlspecialchars($row['nombre'] . ' ' . $row['apellido1'], ENT_QUOTES) . '\')"; class="btn btn-danger" title="Eliminar"><i class="fas fa-trash"></i></button>';
                                     }
                                     ?>
                                 </td>
@@ -231,5 +233,6 @@ $queryParams = http_build_query([
 
     </div>
 
+    <script src="./js/index.js"></script>
 </body>
 </html>
