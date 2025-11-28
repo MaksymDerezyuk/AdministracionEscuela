@@ -61,44 +61,44 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 try {
     // Iniciar transacción
     $conn->beginTransaction();
-    
+
     // Verificar que el alumno existe
     $stmt = $conn->prepare("SELECT id FROM tbl_alumnos WHERE id = :id");
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
-    
+
     if (!$stmt->fetch()) {
         $conn->rollBack();
         header('Location: ../index.php?error=' . urlencode('Alumno no encontrado'));
         exit();
     }
-    
-    
+
+
     // Verificar que el email no esté duplicado si se proporciona (excepto para el mismo alumno)
     if (!empty($email)) {
         $stmt = $conn->prepare("SELECT id FROM tbl_alumnos WHERE email = :email AND id != :id");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         if ($stmt->fetch()) {
             $conn->rollBack();
             header('Location: ../view/editar_alumno.php?id=' . $id . '&error=' . urlencode('El email ya está registrado para otro alumno'));
             exit();
         }
     }
-    
+
     // Verificar que el grado existe
     $stmt = $conn->prepare("SELECT id FROM tbl_grados WHERE id = :id_grado");
     $stmt->bindParam(':id_grado', $id_grado, PDO::PARAM_INT);
     $stmt->execute();
-    
+
     if (!$stmt->fetch()) {
         $conn->rollBack();
         header('Location: ../view/editar_alumno.php?id=' . $id . '&error=' . urlencode('El grado seleccionado no existe'));
         exit();
     }
-    
+
     // Actualizar datos del alumno (DNI no se edita)
     $sql = "UPDATE tbl_alumnos SET 
             nombre = :nombre,
@@ -107,7 +107,7 @@ try {
             email = :email,
             fecha_nacimiento = :fecha_nacimiento
             WHERE id = :id";
-    
+
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':nombre', $nombre);
     $stmt->bindParam(':apellido1', $apellido1);
@@ -116,21 +116,20 @@ try {
     $stmt->bindParam(':fecha_nacimiento', $fecha_nacimiento);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
-    
-    
+
     // Verificar si ya existe una matrícula para este alumno
     $stmt = $conn->prepare("SELECT id FROM tbl_matriculas WHERE id_alumno = :id_alumno");
     $stmt->bindParam(':id_alumno', $id, PDO::PARAM_INT);
     $stmt->execute();
     $matricula_existente = $stmt->fetch();
-    
+
     if ($matricula_existente) {
         // Actualizar matrícula existente
         $sql = "UPDATE tbl_matriculas SET 
                 id_grado = :id_grado,
                 anio_academico = :anio_academico
                 WHERE id_alumno = :id_alumno";
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id_grado', $id_grado, PDO::PARAM_INT);
         $stmt->bindParam(':anio_academico', $anio_academico);
@@ -140,20 +139,19 @@ try {
         // Crear nueva matrícula
         $sql = "INSERT INTO tbl_matriculas (id_alumno, id_grado, anio_academico) 
                 VALUES (:id_alumno, :id_grado, :anio_academico)";
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id_alumno', $id, PDO::PARAM_INT);
         $stmt->bindParam(':id_grado', $id_grado, PDO::PARAM_INT);
         $stmt->bindParam(':anio_academico', $anio_academico);
         $stmt->execute();
     }
-    
+
     // Confirmar transacción
     $conn->commit();
-    
+
     header('Location: ../index.php?success=' . urlencode('Alumno actualizado correctamente'));
     exit();
-    
 } catch (PDOException $e) {
     // Revertir cambios en caso de error
     if ($conn->inTransaction()) {
@@ -162,4 +160,3 @@ try {
     header('Location: ../view/editar_alumno.php?id=' . $id . '&error=' . urlencode('Error en la base de datos: ' . $e->getMessage()));
     exit();
 }
-?>

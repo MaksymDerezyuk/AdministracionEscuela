@@ -34,6 +34,7 @@ if ($_SESSION['user_rol'] === 'profesor') {
             INNER JOIN tbl_profesor_asignatura pa ON n.id_asignatura = pa.id_asignatura
             WHERE pa.id_profesor = :id_profesor
             ";
+
     // Asignamos el valor con clave nombrada
     $params[':id_profesor'] = $_SESSION['user_id'];
 } else {
@@ -198,11 +199,9 @@ $queryParams = http_build_query([
                     </div>
 
                     <div class="action-buttons">
-                        <?php
-                        if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador') {
-                            echo '<a href="./view/crear_alumno.php" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Alumno</a>';
-                        }
-                        ?>
+                        <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador'): ?>
+                            <a href="./view/crear_alumno.php" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Alumno</a>
+                        <?php endif; ?>
                         <a href="./view/estadisticas.php" class="btn btn-info"><i class="fas fa-chart-bar"></i> Estadísticas</a>
                     </div>
                 </div>
@@ -228,7 +227,6 @@ $queryParams = http_build_query([
                                 <td><?php echo htmlspecialchars($row['dni']); ?></td>
                                 <td><?php echo htmlspecialchars($row['nombre']); ?></td>
                                 <td><?php echo htmlspecialchars($row['apellido1'] . ' ' . $row['apellido2']); ?></td>
-
                                 <td>
                                     <?php
                                     if (!empty($row['nombre_grado'])) {
@@ -238,7 +236,6 @@ $queryParams = http_build_query([
                                     }
                                     ?>
                                 </td>
-
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td class="actions">
                                     <a href="./view/ver_alumno.php?id=<?php echo $row['id']; ?>" class="btn btn-info" title="Ver Notas"><i class="fas fa-eye"></i></a>
@@ -265,13 +262,9 @@ $queryParams = http_build_query([
                 <?php if ($page > 1): ?>
                     <a href="?page=<?php echo $page - 1; ?>&<?php echo $queryParams; ?>">&laquo; Anterior</a>
                 <?php endif; ?>
-
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?php echo $i; ?>&<?php echo $queryParams; ?>" class="<?php if ($i == $page) echo 'active'; ?>">
-                        <?php echo $i; ?>
-                    </a>
+                    <a href="?page=<?php echo $i; ?>&<?php echo $queryParams; ?>" class="<?php if ($i == $page) echo 'active'; ?>"><?php echo $i; ?></a>
                 <?php endfor; ?>
-
                 <?php if ($page < $totalPages): ?>
                     <a href="?page=<?php echo $page + 1; ?>&<?php echo $queryParams; ?>">Siguiente &raquo;</a>
                 <?php endif; ?>
