@@ -22,7 +22,7 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Ver Notas del Alumno</title>
+            <title>Ver Notas de <?php echo htmlspecialchars($alumno[0]['nombre']); ?></title>
             <link rel="stylesheet" href="../css/style.css">
         </head>
 
@@ -38,16 +38,16 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
                         <a href="./proc/logout.php" class="btn btn-danger">Cerrar Sesión</a>
                     </div>
                 </div>
-                <h1>Notas del Alumno</h1>
+                <h1>Notas</h1>
                 <?php if (count($alumno) > 0): ?>
-                    <h2 class="centrar">Alumno: <?php echo htmlspecialchars($alumno[0]['nombre']); ?></h2>
+                    <h2 class="centrar">Alumno/a: <?php echo htmlspecialchars($alumno[0]['nombre']); ?></h2>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Asignatura</th>
-                                    <th>Profesor</th>
-                                    <th>Nota</th>
+                                    <th class="centrar">Asignatura</th>
+                                    <th class="centrar">Profesor</th>
+                                    <th class="centrar">Nota</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -1,5 +1,6 @@
 USE db_gestion_notas;
 
+
 -- ==========================================================
 -- 1. GESTORES (Usuarios: Admin y Profesores)
 -- ==========================================================
@@ -7,11 +8,12 @@ USE db_gestion_notas;
 -- (Asegúrate de usar hashes válidos generados por tu sistema si estos no van)
 
 INSERT INTO tbl_gestores (id, nombre, email, password, rol) VALUES
-(1, 'Admin Principal', 'admin@escuela.edu', '$2y$10$uMB/d.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.', 'administrador'),
-(2, 'Profesor Java', 'profe@escuela.edu', '$2y$10$uMB/d.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.', 'profesor'),
-(3, 'Dra. Elena Económicas', 'elena@escuela.edu', '$2y$10$uMB/d.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.', 'profesor'),
-(4, 'Prof. Marcos 3D', 'marcos@escuela.edu', '$2y$10$uMB/d.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.', 'profesor'),
-(5, 'Sara Sistemas', 'sara@escuela.edu', '$2y$10$uMB/d.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.w.', 'profesor');
+(1, 'Admin Principal', 'admin@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'administrador'),
+(2, 'Alberto De Santos', 'alberto@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(3, 'Maksym Derezuk', 'maksym@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(4, 'Aaron Suarez', 'aaron@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(5, 'Sergi Nebot', 'sergi@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(6, 'Gerard Rodriguez', 'gerard@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor');
 
 -- ==========================================================
 -- 2. FACULTADES
@@ -31,7 +33,6 @@ INSERT INTO tbl_grados (id, nombre, id_facultad) VALUES
 -- ==========================================================
 -- 4. ASIGNATURAS
 -- ==========================================================
-
 -- Informática (Grado 1)
 INSERT INTO tbl_asignaturas (id, nombre, id_grado, curso, creditos) VALUES
 (1, 'Fundamentos de Programación', 1, '1', 6),
@@ -55,30 +56,30 @@ INSERT INTO tbl_asignaturas (id, nombre, id_grado, curso, creditos) VALUES
 (13, 'Macroeconomía', 3, '2', 6);
 
 -- ==========================================================
--- 5. RELACIÓN PROFESOR - ASIGNATURA (IMPORTANTE PARA PHP)
+-- 5. RELACIÓN PROFESOR - ASIGNATURA (CORREGIDO)
 -- ==========================================================
--- Aquí asignamos quién da qué clase. Sin esto, el INNER JOIN falla.
+-- IMPORTANTE: Aquí NO aparece el ID 1 (Admin).
 
 INSERT INTO tbl_profesor_asignatura (id_profesor, id_asignatura) VALUES
--- Profesor Java (ID 2): Se encarga de programación básica
+-- Profesor Java (ID 2): Programación básica
 (2, 1), -- Fundamentos
 (2, 2), -- Bases de Datos
 (2, 4), -- Estructura de Datos
 
--- Admin (ID 1): Se encarga de cosas técnicas generales
-(1, 3), -- Mates Discretas
-(1, 5), -- Sistemas Operativos
+-- Roberto Matemáticas (ID 6): Toma las que antes tenía el Admin
+(6, 3), -- Mates Discretas
+(6, 5), -- Sistemas Operativos
 
--- Sara Sistemas (ID 5): Cosas avanzadas de informática
+-- Sara Sistemas (ID 5): Informática Avanzada
 (5, 6), -- IA
 (5, 7), -- TFG
 
--- Prof. Marcos 3D (ID 4): Rama de videojuegos
-(4, 8), -- Diseño de Niveles (Compartida o exclusiva)
+-- Prof. Marcos 3D (ID 4): Videojuegos
+(4, 8), -- Diseño de Niveles
 (4, 9), -- Motores Gráficos
 (4, 10), -- Animación 3D
 
--- Dra. Elena (ID 3): Rama de ADE
+-- Dra. Elena (ID 3): ADE
 (3, 11), -- Contabilidad
 (3, 12), -- Marketing
 (3, 13); -- Macroeconomía
@@ -86,12 +87,10 @@ INSERT INTO tbl_profesor_asignatura (id_profesor, id_asignatura) VALUES
 -- ==========================================================
 -- 6. MATRÍCULAS
 -- ==========================================================
--- Asumiendo que existen IDs de alumnos 1, 2, 3... en tbl_alumnos
-
 INSERT INTO tbl_matriculas (id_alumno, id_grado, anio_academico) VALUES
 (1, 1, '2024/2025'), -- Juan (Info)
 (2, 1, '2024/2025'), -- María (Info)
-(3, 1, '2024/2025'), -- Carlos (Info)
+(3, 1, '2024/2025'), 
 (4, 1, '2024/2025'), 
 (5, 2, '2024/2025'), -- Luis (Videojuegos)
 (6, 2, '2024/2025'), 
@@ -101,22 +100,21 @@ INSERT INTO tbl_matriculas (id_alumno, id_grado, anio_academico) VALUES
 -- ==========================================================
 -- 7. NOTAS
 -- ==========================================================
-
 INSERT INTO tbl_notas (id_alumno, id_asignatura, convocatoria, nota) VALUES
--- Juan Pérez (ID 1) - Informática
-(1, 1, 'ordinaria', 8.50),  -- Fundamentos (Prof. Java)
-(1, 2, 'ordinaria', 7.25),  -- BBDD (Prof. Java)
-(1, 3, 'extraordinaria', 5.00), -- Mates (Admin)
+-- Juan Pérez (ID 1)
+(1, 1, 'ordinaria', 8.50),  -- Muestra: Profe Java
+(1, 2, 'ordinaria', 7.25),  -- Muestra: Profe Java
+(1, 3, 'extraordinaria', 5.00), -- Mates (Ahora mostrará: Roberto Matemáticas)
 
--- María López (ID 2) - Informática
+-- María López (ID 2)
 (2, 1, 'ordinaria', 9.00),
 (2, 2, 'ordinaria', 9.50),
-(2, 6, 'ordinaria', 10.00), -- IA (Sara Sistemas)
+(2, 6, 'ordinaria', 10.00), -- IA (Muestra: Sara Sistemas)
 
--- Luis Martín (ID 5) - Videojuegos
-(5, 8, 'ordinaria', 6.75),  -- Diseño Niveles (Marcos 3D)
-(5, 9, 'ordinaria', 8.00),  -- Motores (Marcos 3D)
+-- Luis Martín (ID 5)
+(5, 8, 'ordinaria', 6.75),  -- Muestra: Marcos 3D
+(5, 9, 'ordinaria', 8.00),  -- Muestra: Marcos 3D
 
--- Pedro Díaz (ID 7) - ADE
-(7, 11, 'ordinaria', 7.50), -- Contabilidad (Dra. Elena)
-(7, 12, 'ordinaria', 6.00); -- Marketing (Dra. Elena)
+-- Pedro Díaz (ID 7)
+(7, 11, 'ordinaria', 7.50), -- Muestra: Dra. Elena
+(7, 12, 'ordinaria', 6.00); -- Muestra: Dra. Elena

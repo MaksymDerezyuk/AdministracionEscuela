@@ -20,17 +20,31 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $offset = ($page - 1) * $limit;
 
-// --- BUILD QUERY (MODIFICADO POR ANALISTA) ---
-// Usamos alias 'a' para alumnos, 'm' para matrículas, 'g' para grados
-$sql = "SELECT a.*, g.nombre AS nombre_grado 
-        FROM tbl_alumnos a
-        LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno
-        LEFT JOIN tbl_grados g ON m.id_grado = g.id
-        WHERE 1=1";
-
+// Inicializamos params
 $params = [];
 
-// Filtros (Añadido el prefijo 'a.' para evitar ambigüedad)
+// --- 1. BUILD MAIN QUERY ---
+if ($_SESSION['user_rol'] === 'profesor') {
+    // Si es profesor, solo ver alumnos asociados a sus asignaturas
+    $sql = "SELECT DISTINCT a.*, g.nombre AS nombre_grado 
+            FROM tbl_alumnos a
+            LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno
+            LEFT JOIN tbl_grados g ON m.id_grado = g.id
+            INNER JOIN tbl_notas n ON a.id = n.id_alumno
+            INNER JOIN tbl_profesor_asignatura pa ON n.id_asignatura = pa.id_asignatura
+            WHERE pa.id_profesor = :id_profesor
+            ";
+    // Asignamos el valor con clave nombrada
+    $params[':id_profesor'] = $_SESSION['user_id'];
+} else {
+    $sql = "SELECT a.*, g.nombre AS nombre_grado 
+            FROM tbl_alumnos a
+            LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno
+            LEFT JOIN tbl_grados g ON m.id_grado = g.id
+            WHERE 1=1";
+}
+
+// Filtros comunes
 if (!empty($search_nombre)) {
     $sql .= " AND a.nombre LIKE :nombre";
     $params[':nombre'] = "%$search_nombre%";
@@ -49,30 +63,45 @@ if (!empty($search_email)) {
     $params[':email'] = "%$search_email%";
 }
 
-// --- Count total for pagination ---
-// Reemplazamos el SELECT complejo por un COUNT simple manteniendo los filtros
-// Nota: Usamos una query específica para el conteo para evitar errores con los JOINs en el str_replace
-$sqlCount = "SELECT COUNT(*) FROM tbl_alumnos a 
-             LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
-             LEFT JOIN tbl_grados g ON m.id_grado = g.id 
-             WHERE 1=1";
+// --- 2. COUNT TOTAL FOR PAGINATION ---
+// Construimos la query del contador con la MISMA lógica que la principal
+if ($_SESSION['user_rol'] === 'profesor') {
+    $sqlCount = "SELECT COUNT(DISTINCT a.id) FROM tbl_alumnos a 
+                 LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
+                 LEFT JOIN tbl_grados g ON m.id_grado = g.id 
+                 INNER JOIN tbl_notas n ON a.id = n.id_alumno
+                 INNER JOIN tbl_profesor_asignatura pa ON n.id_asignatura = pa.id_asignatura
+                 WHERE pa.id_profesor = :id_profesor";
+} else {
+    $sqlCount = "SELECT COUNT(*) FROM tbl_alumnos a 
+                 LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
+                 LEFT JOIN tbl_grados g ON m.id_grado = g.id 
+                 WHERE 1=1";
+}
 
+// Añadimos los filtros al contador
 if (!empty($search_nombre)) $sqlCount .= " AND a.nombre LIKE :nombre";
 if (!empty($search_apellido)) $sqlCount .= " AND (a.apellido1 LIKE :apellido1 OR a.apellido2 LIKE :apellido2)";
 if (!empty($search_dni)) $sqlCount .= " AND a.dni LIKE :dni";
 if (!empty($search_email)) $sqlCount .= " AND a.email LIKE :email";
 
+// --- CORRECCIÓN AQUÍ ---
+// Ya NO borramos el :id_profesor, porque ahora $sqlCount SÍ lo usa cuando es profesor.
+// Pasamos $params directamente.
 $stmtCount = $conn->prepare($sqlCount);
 $stmtCount->execute($params);
 $totalRecords = $stmtCount->fetchColumn();
 $totalPages = ceil($totalRecords / $limit);
 
-// --- Add Limit and Offset to Main Query ---
+// --- 3. EXECUTE MAIN QUERY ---
 $sql .= " LIMIT :limit OFFSET :offset";
 $stmt = $conn->prepare($sql);
+
+// Bind de los parámetros normales
 foreach ($params as $key => $value) {
     $stmt->bindValue($key, $value);
 }
+// Bind de limit y offset
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
@@ -96,8 +125,25 @@ $queryParams = http_build_query([
     <title>Panel de Administración - Gestio-Notes</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarEliminacion(id, nombre) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Vas a eliminar al alumno " + nombre,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "./proc/eliminar_alumno.php?id=" + id;
+                }
+            })
+        }
+    </script>
 </head>
 
 <body>
@@ -170,7 +216,8 @@ $queryParams = http_build_query([
                         <th>DNI</th>
                         <th>Nombre</th>
                         <th>Apellidos</th>
-                        <th>Grado</th> <th>Email</th>
+                        <th>Grado</th>
+                        <th>Email</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -181,9 +228,9 @@ $queryParams = http_build_query([
                                 <td><?php echo htmlspecialchars($row['dni']); ?></td>
                                 <td><?php echo htmlspecialchars($row['nombre']); ?></td>
                                 <td><?php echo htmlspecialchars($row['apellido1'] . ' ' . $row['apellido2']); ?></td>
-                                
+
                                 <td>
-                                    <?php 
+                                    <?php
                                     if (!empty($row['nombre_grado'])) {
                                         echo "<b>" . htmlspecialchars($row['nombre_grado']) . "</b>";
                                     } else {
@@ -198,7 +245,7 @@ $queryParams = http_build_query([
                                     <?php
                                     if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'administrador') {
                                         echo '<a href="./view/editar_alumno.php?id=' . $row['id'] . '" class="btn btn-warning" title="Editar"><i class="fas fa-edit"></i></a>';
-                                        echo '<button onclick="confirmarEliminacion(' . $row['id'] . ', \'' . htmlspecialchars($row['nombre'] . ' ' . $row['apellido1'], ENT_QUOTES) . '\')"; class="btn btn-danger" title="Eliminar"><i class="fas fa-trash"></i></button>';
+                                        echo '<button onclick="confirmarEliminacion(' . $row['id'] . ', \'' . htmlspecialchars($row['nombre'] . ' ' . $row['apellido1'], ENT_QUOTES) . '\')" class="btn btn-danger" title="Eliminar"><i class="fas fa-trash"></i></button>';
                                     }
                                     ?>
                                 </td>
@@ -229,10 +276,18 @@ $queryParams = http_build_query([
                     <a href="?page=<?php echo $page + 1; ?>&<?php echo $queryParams; ?>">Siguiente &raquo;</a>
                 <?php endif; ?>
             </div>
+        <?php else: ?>
+            <div class="pagination">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>&<?php echo $queryParams; ?>" class="<?php if ($i == $page) echo 'active'; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+            </div>
         <?php endif; ?>
-
     </div>
 
     <script src="./js/index.js"></script>
 </body>
+
 </html>
