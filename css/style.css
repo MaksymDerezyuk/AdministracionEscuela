@@ -73,6 +73,11 @@ body {
     min-height: 100vh;
     padding: 20px;
 }
+.centrar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .contenedor {
     width: 100%;
