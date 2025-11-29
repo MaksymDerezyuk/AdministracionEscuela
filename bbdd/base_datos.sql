@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS tbl_notas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_alumno INT NOT NULL,
     id_asignatura INT NOT NULL,
-    convocatoria ENUM('ordinaria','extraordinaria') NOT NULL,
-    nota DECIMAL(4,2) NOT NULL
+    convocatoria ENUM('ordinaria','extraordinaria'),
+    nota DECIMAL(4,2)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla asistencias

@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $conn->beginTransaction();
 
+        // 1. INSERTAR ALUMNO
         $stmt1 = $conn->prepare("INSERT INTO tbl_alumnos (dni, nombre, apellido1, apellido2, email, fecha_nacimiento) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt1->execute([
             $datos['dni'],
@@ -36,17 +37,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $alumnoId = $conn->lastInsertId();
 
-        $stmt2 = $conn->prepare("INSERT INTO tbl_matriculas (id_alumno, id_grado) VALUES (?, ?)");
-        $stmt2->execute([$alumnoId, $datos['grado']]);
+        // 2. INSERTAR MATRÍCULA
+        // Nota: En tu imagen 'tbl_matriculas' tiene 'anio_academico'.
+        // Es recomendable insertarlo. Aquí calculo el año actual (ej: "2024-2025").
+        $anio_actual = date('Y') . '-' . (date('Y') + 1); 
+        
+        $stmt2 = $conn->prepare("INSERT INTO tbl_matriculas (id_alumno, id_grado, anio_academico) VALUES (?, ?, ?)");
+        $stmt2->execute([$alumnoId, $datos['grado'], $anio_actual]);
 
+        // 3. OBTENER ASIGNATURAS DEL GRADO
+        // Seleccionamos las asignaturas vinculadas a este grado
+        $stmtAsignaturas = $conn->prepare("SELECT id FROM tbl_asignaturas WHERE id_grado = ?");
+        $stmtAsignaturas->execute([$datos['grado']]);
+        $asignaturas = $stmtAsignaturas->fetchAll(PDO::FETCH_ASSOC);
+
+        // 4. INSERTAR EN TBL_NOTAS (Vincular alumno con asignaturas)
+        // Preparamos la consulta fuera del bucle para mayor rendimiento
+        $stmtNotas = $conn->prepare("INSERT INTO tbl_notas (id_alumno, id_asignatura, nota, convocatoria) VALUES (?, ?, NULL, NULL)");
+
+        foreach ($asignaturas as $asignatura) {
+            $stmtNotas->execute([
+                $alumnoId, 
+                $asignatura['id']
+            ]);
+        }
         $conn->commit();
 
-        header("Location: ../view/crear_alumno.php?msg=Alumno registrado correctamente.&tipo=exito");
+        header("Location: ../view/crear_alumno.php?msg=Alumno y asignaturas registrados correctamente.&tipo=exito");
         exit;
 
     } catch (PDOException $e) {
         $conn->rollBack();
-        $error = urlencode("Error al registrar: ".$e->getMessage());
+        $error = urlencode("Error al registrar: " . $e->getMessage());
         header("Location: ../view/crear_alumno.php?msg=$error&tipo=error");
         exit;
     }
@@ -54,3 +76,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: ../view/crear_alumno.php");
     exit;
 }
+?>
