@@ -66,18 +66,19 @@ $notas = $stmt_notas->fetchAll(PDO::FETCH_ASSOC);
                     <form action="../proc/proc_insert_nota.php" method="post" class="formulario formulario-grid">
                         <label>
                             Asignatura:
-                            <select name="id_asignatura">
-                                <option value="">Seleccione una asignatura</option>
+                            <select name="id_asignatura" id="id_asignatura">
+                                <option value="" disabled selected>Seleccione una asignatura</option>
                                 <?php foreach ($asignaturas as $asignatura): ?>
                                     <option value="<?php echo htmlspecialchars($asignatura['id']); ?>">
                                         <?php echo htmlspecialchars($asignatura['nombre']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <p id="error_asignatura"></p>
                         </label>
                         <label>
                             Convocatoria:
-                            <select name="convocatoria">
+                            <select name="convocatoria" id="convocatoria">
                                 <option value="" selected disabled>Seleccione una convocatoria</option>
                                 <?php
                                 foreach ($notas as $nota) {
@@ -85,15 +86,17 @@ $notas = $stmt_notas->fetchAll(PDO::FETCH_ASSOC);
                                 }
                                 ?>
                             </select>
+                            <p id="error_convocatoria"></p>
                         </label>
                         <label>
                             Nota:
                             <input type="number" id="nota" name="nota" step="0.01">
+                            <p id="error_nota"></p>
                         </label>
                         <input type="hidden" id="curso_alumno" name="curso_alumno" value="<?php echo htmlspecialchars($curso); ?>">
                         <input type="hidden" id="id_alumno" name="id_alumno" value="<?php echo htmlspecialchars($alumno_id); ?>">
 
-                        <button type="submit" class="btn btn-primary">Guardar Nota</button>
+                        <button type="submit" id="btn_enviar" class="btn btn-primary">Guardar Nota</button>
                         <?php
                         if (isset($_GET['error'])) {
                             echo '<p class="alerta alerta-error">' . htmlspecialchars($_GET['error']) . '</p>';
@@ -105,6 +108,7 @@ $notas = $stmt_notas->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </main>
+    <script src="../js/poner_notas.js"></script>
 </body>
 
 </html>

@@ -206,6 +206,11 @@ $queryParams = http_build_query([
                     </div>
                 </div>
             </form>
+            <?php
+            if (isset($_GET['error'])) {
+                echo '<p class="alerta alerta-error">' . htmlspecialchars($_GET['error']) . '</p>';
+            }
+            ?>
         </div>
 
         <div class="table-responsive">
@@ -279,7 +284,6 @@ $queryParams = http_build_query([
             </div>
         <?php endif; ?>
     </div>
-
     <script src="./js/index.js"></script>
 </body>
 

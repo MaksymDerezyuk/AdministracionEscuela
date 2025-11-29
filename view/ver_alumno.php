@@ -11,10 +11,27 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
     } else {
         require_once '../conexion/connection.php';
         $id_alumno = $_GET['id'];
-        $sql = "SELECT ta.nombre AS nombre, tas.nombre AS asignatura, tn.nota as nota, tg.nombre AS profesor FROM tbl_alumnos ta INNER JOIN tbl_notas tn ON ta.id = tn.id_alumno Inner Join tbl_asignaturas tas ON tn.id_asignatura = tas.id INNER JOIN tbl_profesor_asignatura tpa on tas.id = tpa.id_asignatura INNER JOIN tbl_gestores tg ON tpa.id_profesor = tg.id WHERE ta.id = ?";
+        // Obtener las notas del alumno
+        $sql = "SELECT ta.nombre AS nombre, tas.nombre AS asignatura, ta.apellido1, ta.apellido2, tn.nota as nota, tg.nombre AS profesor FROM tbl_alumnos ta INNER JOIN tbl_notas tn ON ta.id = tn.id_alumno Inner Join tbl_asignaturas tas ON tn.id_asignatura = tas.id INNER JOIN tbl_profesor_asignatura tpa on tas.id = tpa.id_asignatura INNER JOIN tbl_gestores tg ON tpa.id_profesor = tg.id WHERE ta.id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id_alumno]);
         $alumno = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Comprobamos si el alumno esta matriculado en alguna asignatura del profesor logueado
+        $profesor_id = $_SESSION['user_id'];
+        $sql_check = "SELECT COUNT(*) FROM tbl_alumnos ta INNER JOIN tbl_matriculas tm
+            ON ta.id = tm.id_alumno
+            INNER JOIN tbl_grados tg ON tm.id_grado = tg.id
+            INNER JOIN tbl_asignaturas tas ON tg.id = tas.id_grado
+            INNER JOIN tbl_profesor_asignatura tpa ON tas.id = tpa.id_asignatura
+            WHERE ta.id = ? AND tpa.id_profesor = ?";
+        $stmt_check = $conn->prepare($sql_check);
+        $stmt_check->execute([$id_alumno, $profesor_id]);
+        $alumno_count = $stmt_check->fetchColumn();
+        if ($alumno_count == 0) {
+            header('Location: ../index.php?error=No tienes permiso para ver las notas de este alumno');
+            exit();
+        }
 ?>
         <!DOCTYPE html>
         <html lang="es">
@@ -43,7 +60,7 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
                 </div>
                 <h1>Notas</h1>
                 <?php if (count($alumno) > 0): ?>
-                    <h2 class="centrar">Alumno/a: <?php echo htmlspecialchars($alumno[0]['nombre']); ?></h2>
+                    <h2 class="centrar">Alumno/a: <?php echo htmlspecialchars($alumno[0]['nombre'] . ' ' . $alumno[0]['apellido1'] . ' ' . $alumno[0]['apellido2']); ?></h2>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
