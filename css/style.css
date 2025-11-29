@@ -164,7 +164,9 @@ a:hover {
 
 .formulario input[type="text"],
 .formulario input[type="password"],
-.formulario input[type="email"] {
+.formulario input[type="email"],
+.formulario select,
+.formulario input[type="number"] {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;

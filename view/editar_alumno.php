@@ -83,7 +83,7 @@ try {
                 <div class="tarjeta tarjeta-wide">
                     <h1>Editar Alumno</h1>
 
-                    <form id="formularioEditar" action="../proc/proc_editar_alumno.php" method="post" autocomplete="off" class="formulario formulario-grid">
+                    <form id="formularioEditar" action="../proc/proc_editar_alumno.php" method="post" class="formulario formulario-grid">
                         <input type="hidden" name="id" value="<?php echo htmlspecialchars($alumno['id']); ?>">
                         
                         <label>
