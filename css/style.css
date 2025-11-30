@@ -1749,3 +1749,12 @@ a:hover {
     text-decoration: none;
     color: white;
 }
+
+@media (max-width: 768px) {
+
+    /* Selecciona el encabezado (th) y la celda (td) de la 5ª columna (Email) */
+    .table th:nth-child(5),
+    .table td:nth-child(5) {
+        display: none;
+    }
+}
