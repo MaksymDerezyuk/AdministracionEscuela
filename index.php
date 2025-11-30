@@ -162,7 +162,7 @@ $queryParams = http_build_query([
         </div>
 
         <div class="filters">
-            <form action="" method="GET" class="filter-form">
+            <form action="./index.php" method="GET" class="filter-form">
                 <div class="filter-row">
                     <div class="filter-group">
                         <label for="search_nombre" class="filter-label">Nombre:</label>

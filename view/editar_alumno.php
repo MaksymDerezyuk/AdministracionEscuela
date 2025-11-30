@@ -138,8 +138,8 @@ try {
                             <div id="errorAnio" class="error"></div>
                         </label>
 
-                        <button type="submit" id="btnSubmit">Actualizar Alumno</button>
-                        <a href="../index.php">Volver a la lista de alumnos</a>
+                        <button type="submit" id="btnSubmit" class="btn btn-success">Actualizar Alumno</button>
+                        <a href="../index.php" class="btn btn-primary">Volver a la lista de alumnos</a>
                     </form>
 
                     <?php

@@ -42,7 +42,6 @@ try {
             $asignaturasVistas[] = $alumno['asignatura'];
         }
     }
-
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
 }
@@ -50,6 +49,7 @@ try {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,10 +57,11 @@ try {
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
 
     <div class="dashboard-container">
-        
+
         <div class="header-flex">
             <div class="header-title">
                 <h1><i class="fas fa-chart-line"></i> Análisis de Resultados</h1>
@@ -68,6 +69,7 @@ try {
             </div>
             <div>
                 <a href="../index.php" class="btn btn-primary">Volver al Listado</a>
+                <a href="../proc/logout.php" class="btn btn-danger">Cerrar Sesión</a>
             </div>
         </div>
 
@@ -87,10 +89,10 @@ try {
             <div class="kpi-card kpi-azul">
                 <div class="kpi-label kpi-text-azul">📊 Total de Notas</div>
                 <div class="kpi-value">
-                    <?php 
-                        $total = 0;
-                        foreach($medias as $m) $total += $m['num_evaluaciones'];
-                        echo $total;
+                    <?php
+                    $total = 0;
+                    foreach ($medias as $m) $total += $m['num_evaluaciones'];
+                    echo $total;
                     ?>
                 </div>
                 <div>Evaluaciones registradas</div>
@@ -101,17 +103,17 @@ try {
         <div class="tarjeta card-full-width">
             <div class="progress-list">
                 <?php foreach ($medias as $m): ?>
-                    <?php 
-                        $nota = $m['media_nota'];
-                        $anchoBarra = $nota * 10; // Convertir 8.5 a 85%
-                        
-                        // Lógica de colores por clase CSS
-                        $claseColor = 'bg-danger';
-                        if ($nota >= 9) $claseColor = 'bg-success';
-                        else if ($nota >= 7) $claseColor = 'bg-info';
-                        else if ($nota >= 5) $claseColor = 'bg-warning';
+                    <?php
+                    $nota = $m['media_nota'];
+                    $anchoBarra = $nota * 10; // Convertir 8.5 a 85%
+
+                    // Lógica de colores por clase CSS
+                    $claseColor = 'bg-danger';
+                    if ($nota >= 9) $claseColor = 'bg-success';
+                    else if ($nota >= 7) $claseColor = 'bg-info';
+                    else if ($nota >= 5) $claseColor = 'bg-warning';
                     ?>
-                    
+
                     <div class="progress-item">
                         <div class="progress-label">
                             <?php echo htmlspecialchars($m['nombre']); ?>
@@ -155,7 +157,9 @@ try {
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="3" class="text-center">No hay datos todavía.</td></tr>
+                        <tr>
+                            <td colspan="3" class="text-center">No hay datos todavía.</td>
+                        </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -167,13 +171,13 @@ try {
         // Animar las barras de progreso al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             const progressBars = document.querySelectorAll('.progress-fill');
-            
+
             // Pequeño delay para que se vea la animación
             setTimeout(() => {
                 progressBars.forEach((bar, index) => {
                     const targetWidth = bar.style.width;
                     bar.style.setProperty('--target-width', targetWidth);
-                    
+
                     // Añadir clase animated con delay escalonado
                     setTimeout(() => {
                         bar.classList.add('animated');
@@ -184,4 +188,5 @@ try {
     </script>
 
 </body>
+
 </html>

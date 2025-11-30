@@ -56,7 +56,7 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
                         <?php if ($_SESSION['user_rol'] === 'profesor'): ?>
                             <a class="btn btn-primary" href="./poner_nota.php?id=<?php echo htmlspecialchars($_GET['id']); ?>">Añadir nota</a>
                         <?php endif; ?>
-                        <a href="./proc/logout.php" class="btn btn-danger">Cerrar Sesión</a>
+                        <a href="../proc/logout.php" class="btn btn-danger">Cerrar Sesión</a>
                     </div>
                 </div>
                 <h1>Notas</h1>
