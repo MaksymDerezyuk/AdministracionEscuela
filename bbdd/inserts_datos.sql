@@ -118,3 +118,5 @@ INSERT INTO tbl_notas (id_alumno, id_asignatura, convocatoria, nota) VALUES
 -- Pedro Díaz (ID 7)
 (7, 11, 'ordinaria', 7.50), -- Muestra: Dra. Elena
 (7, 12, 'ordinaria', 6.00); -- Muestra: Dra. Elena
+
+-- 

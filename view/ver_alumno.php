@@ -16,21 +16,22 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id_alumno]);
         $alumno = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Comprobamos si el alumno esta matriculado en alguna asignatura del profesor logueado
-        $profesor_id = $_SESSION['user_id'];
-        $sql_check = "SELECT COUNT(*) FROM tbl_alumnos ta INNER JOIN tbl_matriculas tm
+        if ($_SESSION['user_rol'] === 'profesor') {
+            // Comprobamos si el alumno esta matriculado en alguna asignatura del profesor logueado
+            $profesor_id = $_SESSION['user_id'];
+            $sql_check = "SELECT COUNT(*) FROM tbl_alumnos ta INNER JOIN tbl_matriculas tm
             ON ta.id = tm.id_alumno
             INNER JOIN tbl_grados tg ON tm.id_grado = tg.id
             INNER JOIN tbl_asignaturas tas ON tg.id = tas.id_grado
             INNER JOIN tbl_profesor_asignatura tpa ON tas.id = tpa.id_asignatura
             WHERE ta.id = ? AND tpa.id_profesor = ?";
-        $stmt_check = $conn->prepare($sql_check);
-        $stmt_check->execute([$id_alumno, $profesor_id]);
-        $alumno_count = $stmt_check->fetchColumn();
-        if ($alumno_count == 0) {
-            header('Location: ../index.php?error=No tienes permiso para ver las notas de este alumno');
-            exit();
+            $stmt_check = $conn->prepare($sql_check);
+            $stmt_check->execute([$id_alumno, $profesor_id]);
+            $alumno_count = $stmt_check->fetchColumn();
+            if ($alumno_count == 0) {
+                header('Location: ../index.php?error=No tienes permiso para ver las notas de este alumno');
+                exit();
+            }
         }
 ?>
         <!DOCTYPE html>

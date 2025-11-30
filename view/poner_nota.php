@@ -38,7 +38,7 @@ $stmt->execute([$profesor_id]);
 $asignaturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Obtener las convocatorias existentes
-$sql_notas = "SELECT DISTINCT convocatoria FROM tbl_notas";
+$sql_notas = "SELECT DISTINCT convocatoria FROM tbl_notas where convocatoria IS NOT NULL ORDER BY convocatoria ASC";
 $stmt_notas = $conn->prepare($sql_notas);
 $stmt_notas->execute();
 $notas = $stmt_notas->fetchAll(PDO::FETCH_ASSOC);
