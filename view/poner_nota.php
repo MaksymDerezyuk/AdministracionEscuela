@@ -20,7 +20,7 @@ $stmt_check = $conn->prepare($sql_check);
 $stmt_check->execute([$alumno_id, $profesor_id]);
 $alumno_count = $stmt_check->fetchColumn();
 if ($alumno_count == 0) {
-    header('Location: ./ver_alumno.php?id=' . urlencode($alumno_id) . '&error=No tienes permiso para poner nota a este alumno');
+    header('Location: ../index.php?id=' . urlencode($alumno_id) . '&error=No tienes permiso para poner nota a este alumno');
     exit();
 }
 // Obtener el nombre del alumno

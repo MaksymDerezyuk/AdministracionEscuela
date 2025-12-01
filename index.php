@@ -73,7 +73,7 @@ if ($_SESSION['user_rol'] === 'profesor') {
                  INNER JOIN tbl_notas n ON a.id = n.id_alumno
                  INNER JOIN tbl_profesor_asignatura pa ON n.id_asignatura = pa.id_asignatura
                  WHERE pa.id_profesor = :id_profesor";
-} else {
+} else if ($_SESSION['user_rol'] === 'administrador') {
     $sqlCount = "SELECT COUNT(*) FROM tbl_alumnos a 
                  LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
                  LEFT JOIN tbl_grados g ON m.id_grado = g.id 
@@ -86,8 +86,6 @@ if (!empty($search_apellido)) $sqlCount .= " AND (a.apellido1 LIKE :apellido1 OR
 if (!empty($search_dni)) $sqlCount .= " AND a.dni LIKE :dni";
 if (!empty($search_email)) $sqlCount .= " AND a.email LIKE :email";
 
-// --- CORRECCIÓN AQUÍ ---
-// Ya NO borramos el :id_profesor, porque ahora $sqlCount SÍ lo usa cuando es profesor.
 // Pasamos $params directamente.
 $stmtCount = $conn->prepare($sqlCount);
 $stmtCount->execute($params);
