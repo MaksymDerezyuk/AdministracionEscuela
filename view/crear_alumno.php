@@ -31,32 +31,39 @@ $grados = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo "<div class='alerta $tipo'>$msg</div>";
             }
             ?>
-            <form class="formulario" action="../proc/proc_crear_alumno.php" method="POST">
+            <form class="formulario" action="../proc/proc_crear_alumno.php" method="POST" onsubmit="return validarFormulario()">
                 <label for="dni">DNI:</label>
-                <input type="text" name="dni" id="dni" required maxlength="15">
+                <input type="text" name="dni" id="dni" maxlength="15">
+                <span id="error-dni" style="color: red;"></span>
 
                 <label for="nombre">Nombre:</label>
-                <input type="text" name="nombre" id="nombre" required maxlength="50">
+                <input type="text" name="nombre" id="nombre" maxlength="50">
+                <span id="error-nombre" style="color: red;"></span>
 
                 <label for="apellido1">Primer Apellido:</label>
-                <input type="text" name="apellido1" id="apellido1" required maxlength="50">
+                <input type="text" name="apellido1" id="apellido1" maxlength="50">
+                <span id="error-apellido1" style="color: red;"></span>
 
                 <label for="apellido2">Segundo Apellido:</label>
                 <input type="text" name="apellido2" id="apellido2" maxlength="50">
+                <span id="error-apellido2" style="color: red;"></span>
 
                 <label for="email">Email:</label>
                 <input type="email" name="email" id="email" maxlength="100">
+                <span id="error-email" style="color: red;"></span>
 
                 <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-                <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" required>
+                <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
+                <span id="error-fecha" style="color: red;"></span>
 
                 <label for="grado">Grado:</label>
-                <select name="grado" id="grado" required>
+                <select name="grado" id="grado">
                     <option value="">Selecciona un grado</option>
                     <?php foreach($grados as $grado): ?>
                         <option value="<?= $grado['id'] ?>"><?= htmlspecialchars($grado['nombre']) ?></option>
                     <?php endforeach; ?>
                 </select>
+                <span id="error-grado" style="color: red;"></span>
 
 
                 <button type="submit">Registrar Alumno</button>
@@ -64,5 +71,6 @@ $grados = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+<script src="../js/registrar_alumno.js"></script>
 </body>
 </html>
