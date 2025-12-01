@@ -12,7 +12,7 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
         require_once '../conexion/connection.php';
         $id_alumno = $_GET['id'];
         // Obtenemos el nombre del alumno
-        $sql_nombre = "SELECT nombre FROM tbl_alumnos WHERE id = ?";
+        $sql_nombre = "SELECT CONCAT(nombre, ' ', apellido1, ' ', apellido2) FROM tbl_alumnos WHERE id = ?";
         $stmt_nombre = $conn->prepare($sql_nombre);
         $stmt_nombre->execute([$id_alumno]);
         $alumno_nombre = $stmt_nombre->fetchColumn();
