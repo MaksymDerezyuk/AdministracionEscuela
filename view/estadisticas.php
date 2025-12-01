@@ -27,7 +27,7 @@ try {
                JOIN tbl_asignaturas asig ON n.id_asignatura = asig.id
                JOIN tbl_alumnos alu ON n.id_alumno = alu.id
                WHERE (n.id_asignatura, n.nota) IN (
-                    SELECT id_asignatura, MAX(nota) FROM tbl_notas GROUP BY id_asignatura
+                    SELECT id_asignatura, MAX(nota) FROM tbl_notas WHERE nota IS NOT NULL GROUP BY id_asignatura
                )
                ORDER BY asig.nombre ASC, alu.id ASC";
     $stmtTop = $conn->query($sqlTop);
