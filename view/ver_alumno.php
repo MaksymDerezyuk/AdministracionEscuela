@@ -11,8 +11,17 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
     } else {
         require_once '../conexion/connection.php';
         $id_alumno = $_GET['id'];
+        // Obtenemos el nombre del alumno
+        $sql_nombre = "SELECT nombre FROM tbl_alumnos WHERE id = ?";
+        $stmt_nombre = $conn->prepare($sql_nombre);
+        $stmt_nombre->execute([$id_alumno]);
+        $alumno_nombre = $stmt_nombre->fetchColumn();
+        if (!$alumno_nombre) {
+            header('Location: ../index.php?error=El alumno no existe');
+            exit();
+        }
         // Obtener las notas del alumno
-        $sql = "SELECT CONCAT(ta.nombre, ' ', ta.apellido1, ' ', ta.apellido2) AS nombre, tas.nombre AS asignatura, tn.nota as nota, tg.nombre AS profesor FROM tbl_alumnos ta INNER JOIN tbl_notas tn ON ta.id = tn.id_alumno Inner Join tbl_asignaturas tas ON tn.id_asignatura = tas.id INNER JOIN tbl_profesor_asignatura tpa on tas.id = tpa.id_asignatura INNER JOIN tbl_gestores tg ON tpa.id_profesor = tg.id WHERE ta.id = ? and tn.nota IS NOT NULL";
+        $sql = "SELECT  tas.nombre AS asignatura, tn.nota as nota, tg.nombre AS profesor FROM tbl_alumnos ta INNER JOIN tbl_notas tn ON ta.id = tn.id_alumno Inner Join tbl_asignaturas tas ON tn.id_asignatura = tas.id INNER JOIN tbl_profesor_asignatura tpa on tas.id = tpa.id_asignatura INNER JOIN tbl_gestores tg ON tpa.id_profesor = tg.id WHERE ta.id = ? and tn.nota IS NOT NULL";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id_alumno]);
         $alumno = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -60,8 +69,8 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
                     </div>
                 </div>
                 <h1>Notas</h1>
+                <h2 class="centrar">Alumno/a: <?php echo htmlspecialchars($alumno_nombre); ?></h2>
                 <?php if (count($alumno) > 0): ?>
-                    <h2 class="centrar">Alumno/a: <?php echo htmlspecialchars($alumno[0]['nombre']); ?></h2>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
