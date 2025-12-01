@@ -49,7 +49,7 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Ver Notas de <?php echo htmlspecialchars($alumno[0]['nombre']); ?></title>
+            <title>Ver Notas de <?php echo htmlspecialchars($alumno_nombre); ?></title>
             <link rel="stylesheet" href="../css/style.css">
         </head>
 
@@ -58,7 +58,7 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
                 <div class="dashboard-header">
                     <div>
                         <a class="btn btn-primary" href="../index.php">Volver al inicio</a>
-                        <h1>Bienvenido, <?php echo $_SESSION['user_nombre']; ?></h1>
+                        <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></h1>
                         <p>Gestión de Alumnos y Notas</p>
                     </div>
                     <div>
