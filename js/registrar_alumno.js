@@ -139,6 +139,12 @@ function validaFecha() {
         return false;
     }
 
+    var hoy = new Date();
+    if (dateObj > hoy) {
+        error.textContent = "La fecha de nacimiento no puede ser futura.";
+        return false;
+    }
+
     error.textContent = "";
     return true;
 }
