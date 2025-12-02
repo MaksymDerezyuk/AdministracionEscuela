@@ -44,7 +44,7 @@ if ($esProfesor) {
 
     // Asignamos el valor con clave nombrada
     $params[':id_profesor'] = $_SESSION['user_id'];
-} else {
+} else if ($_SESSION['user_rol'] === 'administrador') {
     $sql = "SELECT a.*, g.nombre AS nombre_grado 
             FROM tbl_alumnos a
             LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno
