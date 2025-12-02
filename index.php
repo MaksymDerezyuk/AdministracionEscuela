@@ -15,16 +15,23 @@ $search_nombre = isset($_GET['search_nombre']) ? trim($_GET['search_nombre']) : 
 $search_apellido = isset($_GET['search_apellido']) ? trim($_GET['search_apellido']) : '';
 $search_dni = isset($_GET['search_dni']) ? trim($_GET['search_dni']) : '';
 $search_email = isset($_GET['search_email']) ? trim($_GET['search_email']) : '';
+$allowedLimits = [5, 10, 20, 50];
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
+if (!in_array($limit, $allowedLimits, true)) {
+    $limit = 5;
+}
+
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $offset = ($page - 1) * $limit;
 
 // Inicializamos params
 $params = [];
+$rolUsuario = $_SESSION['user_rol'] ?? '';
+$esProfesor = ($rolUsuario === 'profesor');
 
 // --- 1. BUILD MAIN QUERY ---
-if ($_SESSION['user_rol'] === 'profesor') {
+if ($esProfesor) {
     // Si es profesor, solo ver alumnos asociados a sus asignaturas
     $sql = "SELECT DISTINCT a.*, g.nombre AS nombre_grado 
             FROM tbl_alumnos a
@@ -66,14 +73,14 @@ if (!empty($search_email)) {
 
 // --- 2. COUNT TOTAL FOR PAGINATION ---
 // Construimos la query del contador con la MISMA lógica que la principal
-if ($_SESSION['user_rol'] === 'profesor') {
+if ($esProfesor) {
     $sqlCount = "SELECT COUNT(DISTINCT a.id) FROM tbl_alumnos a 
                  LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
                  LEFT JOIN tbl_grados g ON m.id_grado = g.id 
                  INNER JOIN tbl_notas n ON a.id = n.id_alumno
                  INNER JOIN tbl_profesor_asignatura pa ON n.id_asignatura = pa.id_asignatura
                  WHERE pa.id_profesor = :id_profesor";
-} else if ($_SESSION['user_rol'] === 'administrador') {
+} else {
     $sqlCount = "SELECT COUNT(*) FROM tbl_alumnos a 
                  LEFT JOIN tbl_matriculas m ON a.id = m.id_alumno 
                  LEFT JOIN tbl_grados g ON m.id_grado = g.id 
@@ -90,7 +97,7 @@ if (!empty($search_email)) $sqlCount .= " AND a.email LIKE :email";
 $stmtCount = $conn->prepare($sqlCount);
 $stmtCount->execute($params);
 $totalRecords = $stmtCount->fetchColumn();
-$totalPages = ceil($totalRecords / $limit);
+$totalPages = ($totalRecords > 0) ? (int)ceil($totalRecords / $limit) : 1;
 
 // --- 3. EXECUTE MAIN QUERY ---
 $sql .= " LIMIT :limit OFFSET :offset";

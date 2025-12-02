@@ -1,4 +1,20 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
+    header('Location: ../view/login.php');
+    exit();
+}
+
+if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] !== 'administrador') {
+    header('Location: ../index.php');
+    exit();
+}
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 require_once('../conexion/connection.php');
 
 $stmt = $conn->prepare("SELECT id, nombre FROM tbl_grados");
@@ -32,6 +48,7 @@ $grados = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
             ?>
             <form class="formulario" action="../proc/proc_crear_alumno.php" method="POST" onsubmit="return validarFormulario()">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <label for="dni">DNI:</label>
                 <input type="text" name="dni" id="dni" maxlength="15">
                 <span id="error-dni" style="color: red;"></span>

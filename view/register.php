@@ -61,7 +61,7 @@ session_start();
 
                     <?php
                     if (!empty($_GET['error'])) {
-                        echo "<div class='alerta alerta-error'>" . $_GET['error'] . "</div>";
+                        echo "<div class='alerta alerta-error'>" . htmlspecialchars($_GET['error']) . "</div>";
                     }
                     ?>
                 </div>

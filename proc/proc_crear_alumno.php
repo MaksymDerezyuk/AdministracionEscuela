@@ -1,8 +1,30 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
+    header('Location: ../view/login.php');
+    exit();
+}
+
+if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] !== 'administrador') {
+    header('Location: ../index.php');
+    exit();
+}
+
 require_once('../conexion/connection.php');
 require_once('validaciones_alumno.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $sessionToken = $_SESSION['csrf_token'] ?? '';
+    $postedToken = $_POST['csrf_token'] ?? '';
+
+    if (empty($sessionToken) || empty($postedToken) || !hash_equals($sessionToken, $postedToken)) {
+        header("Location: ../view/crear_alumno.php?msg=" . urlencode('Token CSRF inválido, vuelve a intentarlo.') . "&tipo=error");
+        exit;
+    }
+
+    unset($_SESSION['csrf_token']);
+
     $datos = [
         'dni' => trim($_POST['dni']),
         'nombre' => trim($_POST['nombre']),

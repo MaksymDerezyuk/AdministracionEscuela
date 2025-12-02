@@ -7,8 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Recogemos los datos, las saneamos y las guardamos en variables
     $username = trim(htmlspecialchars($_POST['username']));
     $email = trim(htmlspecialchars($_POST['email']));
-    $password = trim(htmlspecialchars($_POST['password']));
-    $confirm_password = trim(htmlspecialchars($_POST['confirm_password']));
+    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+    $confirm_password = isset($_POST['confirm_password']) ? trim($_POST['confirm_password']) : '';
     $rol = trim(htmlspecialchars($_POST['rol']));
 
     // Validaciones básicas

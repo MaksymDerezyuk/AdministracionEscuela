@@ -8,12 +8,12 @@ USE db_gestion_notas;
 -- (Asegúrate de usar hashes válidos generados por tu sistema si estos no van)
 
 INSERT INTO tbl_gestores (id, nombre, email, password, rol) VALUES
-(1, 'Admin Principal', 'admin@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'administrador'),
-(2, 'Alberto De Santos', 'alberto@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
-(3, 'Maksym Derezuk', 'maksym@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
-(4, 'Aaron Suarez', 'aaron@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
-(5, 'Sergi Nebot', 'sergi@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
-(6, 'Gerard Rodriguez', 'gerard@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor');
+(2, 'Admin Principal', 'admin@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'administrador'),
+(3, 'Alberto De Santos', 'alberto@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(4, 'Maksym Derezuk', 'maksym@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(5, 'Aaron Suarez', 'aaron@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(6, 'Sergi Nebot', 'sergi@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor'),
+(7, 'Gerard Rodriguez', 'gerard@escuela.edu', '$2y$10$FXaaKh8lzROXO91xVnocRuXctk2x5SHJAggsbvYLYw1iYlaUpcAC2', 'profesor');
 
 -- ==========================================================
 -- 2. FACULTADES
@@ -62,9 +62,9 @@ INSERT INTO tbl_asignaturas (id, nombre, id_grado, curso, creditos) VALUES
 
 INSERT INTO tbl_profesor_asignatura (id_profesor, id_asignatura) VALUES
 -- Profesor Java (ID 2): Programación básica
-(2, 1), -- Fundamentos
-(2, 2), -- Bases de Datos
-(2, 4), -- Estructura de Datos
+(1, 1), -- Fundamentos
+(1, 2), -- Bases de Datos
+(1, 4), -- Estructura de Datos
 
 -- Roberto Matemáticas (ID 6): Toma las que antes tenía el Admin
 (6, 3), -- Mates Discretas

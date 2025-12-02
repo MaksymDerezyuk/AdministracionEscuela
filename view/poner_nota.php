@@ -4,6 +4,11 @@ if (!isset($_SESSION['logeado']) || $_SESSION['logeado'] !== true) {
     header('Location: ./login.php');
     exit();
 }
+
+if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] !== 'profesor') {
+    header('Location: ../index.php');
+    exit();
+}
 require_once '../conexion/connection.php';
 $profesor_id = $_SESSION['user_id'];
 $alumno_id = $_GET['id'];

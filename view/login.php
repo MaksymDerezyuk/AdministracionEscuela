@@ -33,9 +33,9 @@ session_destroy();
                     </form>
 
                     <?php if (!empty($_GET['errorform'])){
-                        echo "<div class='alerta alerta-error'>" . $_GET['errorform'] . "</div>";
+                        echo "<div class='alerta alerta-error'>" . htmlspecialchars($_GET['errorform']) . "</div>";
                     } else if (!empty($_GET['estado'])) {
-                        echo "<div class='alerta alerta-exito'>" . $_GET['estado'] . "</div>";
+                        echo "<div class='alerta alerta-exito'>" . htmlspecialchars($_GET['estado']) . "</div>";
                     }
                     ?>
                 </div>
