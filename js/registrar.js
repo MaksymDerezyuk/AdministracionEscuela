@@ -1,3 +1,29 @@
+function ValidarFormulario() {
+
+function ComprobarBtn() {
+    const btn = document.getElementById("btnRegistrar");
+    const errorNombre = document.getElementById("errorNombre").textContent;
+    const errorUsuario = document.getElementById("errorUsuario").textContent;
+    const errorPassword = document.getElementById("errorPassword").textContent;
+    const errorConfirm = document.getElementById("errorConfirm").textContent;
+    const errorEmail = document.getElementById("errorEmail").textContent;
+
+    const nombre = document.getElementById("nombre").value.trim();
+    const usuario = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm_password").value;
+    const email = document.getElementById("email").value.trim();
+
+    if (errorNombre === "" && errorUsuario === "" && errorPassword === "" &&
+        errorConfirm === "" && errorEmail === "" &&
+        nombre.length > 0 && usuario.length > 0 &&
+        password.length > 0 && confirmPassword.length > 0 && email.length > 0) {
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
+}
+
 function validaUsuario() {
      valor = document.getElementById("username").value.trim();
      error = document.getElementById("errorUsuario");
@@ -67,3 +93,4 @@ function validaEmail() {
 }
 
 document.getElementById('email').onblur = validaEmail;
+}
