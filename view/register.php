@@ -48,7 +48,6 @@ session_start();
                         </label>
                         <fieldset class="roles" aria-describedby="errorRol" style="border:none;padding:0;margin:0 0 1rem 0;">
                             <label for="rol_profesor"><input type="radio" id="rol_profesor" name="rol" value="profesor" onchange="validaRol()" required> Profesor</label>
-                            <label for="rol_educador"><input type="radio" id="rol_educador" name="rol" value="educador" onchange="validaRol()"> Educador</label>
                             <label for="rol_secretaria"><input type="radio" id="rol_secretaria" name="rol" value="secretaria" onchange="validaRol()"> Secretaria</label>
                             <label for="rol_administrador"><input type="radio" id="rol_administrador" name="rol" value="administrador" onchange="validaRol()"> Administrador</label>
                             <label for="rol_direccion"><input type="radio" id="rol_direccion" name="rol" value="direccion" onchange="validaRol()"> Dirección</label>
