@@ -14,7 +14,7 @@ if (!isset($_POST['enviado'])) {
             if (isset($_POST['contrasena']) && !empty(trim($_POST['contrasena']))) {
             $contrasena = trim($_POST['contrasena']);
 
-                require_once('./../conexion/connection.php');
+                require_once('../conexion/connection.php');
 
                 // Buscar usuario por email
                 $stmt = $conn->prepare("SELECT * FROM tbl_gestores WHERE email = ?");
